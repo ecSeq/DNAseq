@@ -13,7 +13,7 @@ if(params.help){
          ~ version ${workflow.manifest.version}
 
          Usage: 
-              nextflow run epidiverse/template [OPTIONS]...
+              nextflow run ecseq/dnaseq [OPTIONS]...
 
          Options: GENERAL
               --input [path/to/input/dir]     [REQUIRED] Provide the directory containing fastq file(s) in "*{1,2}.fastq.gz" format
@@ -35,6 +35,19 @@ if(params.help){
               --segemehl                      Perform alignments with "segemehl". [default: off]
 
               --STAR                          Perform alignments with "STAR". [default: off]
+
+
+         Options: TRIMMING
+              --forward                       Forward adapter sequence. [default: "GATCGGAAGAGCTCGTATGCCGTCTTCTGCTTG"]
+
+              --reverse                       Reverse adapter sequence. [default: "ACACTCTTTCCCTACACGACGCTCTTCCGATCT"]
+
+              --minQual                       Minimum base quality threshold. [default: 20]
+
+              --minLeng                       Minimum read length threshold. [default: 25]
+
+              --minOver                       Minimum overlap threshold. [default: 3]
+
 
          Options: ADDITIONAL
               --help                          Display this help information and exit

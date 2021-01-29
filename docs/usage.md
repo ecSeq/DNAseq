@@ -1,4 +1,4 @@
-# EpiDiverse-template Usage
+# ecSeq-DNAseq Usage
 This document describes the parameter options used by the pipeline.
 
 * [Running the pipeline](#running-the-pipeline)
@@ -13,21 +13,27 @@ This document describes the parameter options used by the pipeline.
     * [`--BWA_MEM`](#--BWA_MEM)
     * [`--segemehl`](#--segemehl)
     * [`--STAR`](#--STAR)
+* [Trimming parameters](#trimming-parameters)
+    * [`--forward`](#--forward-arg)
+    * [`--reverse`](#--reverse-arg)
+    * [`--minQual`](#--minqual-arg)
+    * [`--minLeng`](#--minleng-arg)
+    * [`--minOver`](#--minover-arg)
 * [Additional parameters](#additional-parameters)
     * [`--debug`](#--debug)
     * [`--version`](#--version)
     * [`--help`](#--help)
 * [Software dependencies](#software-dependencies)
-    * [`-profile`](#-profile)
-    * [`-with-conda`](#-with-conda)
-    * [`-with-docker`](#-with-docker)
-    * [`-with-singularity`](#-with-singularity)
+    * [`-profile`](#-profile-arg)
+    * [`-with-conda`](#-with-conda-arg)
+    * [`-with-docker`](#-with-docker-arg)
+    * [`-with-singularity`](#-with-singularity-arg)
 * [Other command line parameters](#other-command-line-parameters)
-    * [`-work-dir`](#-work-dir)
-    * [`-params-file`](#-params-file)
-    * [`-config`](#-config)
-    * [`-resume`](#-resume)
-    * [`-name`](#-name)
+    * [`-work-dir`](#-work-dir-arg)
+    * [`-params-file`](#-params-file-arg)
+    * [`-config`](#-config-arg)
+    * [`-resume`](#-resume-arg)
+    * [`-name`](#-name-arg)
 
 ## Workflow
 
@@ -60,6 +66,7 @@ Name the output directory where containing final results. [default: "./"]
 ### `--SE`
 Indicate to the pipeline whether input reads should be expected in single-end format (i.e. "\*.fastq.gz"). [default: off]
 
+
 ## Alignment Parameters
 
 ### `--bowtie2`
@@ -77,6 +84,25 @@ Specify in order to produce alignments using "segemehl". [default: off]
 ### `--STAR`
 Specify in order to produce alignments using "STAR". [default: off]
 
+
+## Trimming Parameters
+
+### `--forward <ARG>`
+Forward adapter sequence. [default: "GATCGGAAGAGCTCGTATGCCGTCTTCTGCTTG"]
+
+### `--reverse <ARG>`
+Reverse adapter sequence. [default: "ACACTCTTTCCCTACACGACGCTCTTCCGATCT"]
+
+### `--minQual <ARG>`
+Minimum base quality threshold. [default: 20]
+
+### `--minLeng <ARG>`
+Minimum read length threshold. [default: 25]
+
+### `--minOver <ARG>`
+Minimum adapter overlap threshold. [default: 3]
+
+
 ## Additional Parameters
 
 ### `--debug`
@@ -92,10 +118,8 @@ When called with `nextflow run ecseq/dnaseq --help` this will display the parame
 
 There are different ways to provide the required software dependencies for the pipeline. The recommended method is to use the Conda, Docker or Singularity profiles as provided by the pipeline. 
 
-### `-profile`
-Use this parameter to choose a preset configuration profile. See the [installation documentation](https://app.gitbook.com/@epidiverse/s/project/epidiverse-pipelines/installation) for more information about profiles.
-
-Profiles available with the pipeline are:
+### `-profile <ARG>`
+Use this parameter to choose a preset configuration profile. Profiles available with the pipeline are:
 
 * `standard`
     * The default profile, used if `-profile` is not specified.
@@ -105,10 +129,10 @@ Profiles available with the pipeline are:
     * Builds a conda environment from the environment.yml file provided by the pipeline
     * Requires conda to be installed on your system.
 * `docker`
-    * Launches a docker image pulled from epidiverse/dmr
+    * Launches a docker image pulled from ecseq/dnaseq
     * Requires docker to be installed on your system. 
 * `singularity`
-    * Launches a singularity image pulled from epidiverse/dmr
+    * Launches a singularity image pulled from ecseq/dnaseq
     * Requires singularity to be installed on your system.
 * `custom`
     * No configuration at all. Useful if you want to build your own config from scratch and want to avoid loading in the default `base` config for process resource allocation.

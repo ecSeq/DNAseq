@@ -1,5 +1,5 @@
 [<img width="200" align="right" src="docs/images/ecseq.jpg">](https://www.ecseq.com)
-[![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A519.09.0-brightgreen.svg)](https://www.nextflow.io/)
+[![Nextflow](https://img.shields.io/badge/nextflow-20.07.1-brightgreen.svg)](https://www.nextflow.io/)
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg)](http://bioconda.github.io/)
 [![Docker](https://img.shields.io/docker/automated/ecseq/dnaseq.svg)](https://hub.docker.com/r/ecseq/dnaseq)
 
@@ -34,18 +34,6 @@ nextflow run ecseq/dnaseq -profile <docker|singularity|conda> --input /path/to/f
 
 > See the [usage documentation](docs/usage.md) for all of the available options when running the pipeline.
 
-### Wiki Documentation
-
-The EpiDiverse/template pipeline is part of the [EpiDiverse Toolkit](https://app.gitbook.com/@epidiverse/s/project/epidiverse-pipelines/overview), a best practice suite of tools intended for the study of [Ecological Plant Epigenetics](https://app.gitbook.com/@epidiverse/s/project/). Links to general guidelines and pipeline-specific documentation can be found below:
-
-1. [Installation](https://app.gitbook.com/@epidiverse/s/project/epidiverse-pipelines/installation)
-2. Pipeline configuration
-    * [Local installation](https://app.gitbook.com/@epidiverse/s/project/epidiverse-pipelines/installation#2-install-the-pipeline)
-    * [Adding your own system config](https://app.gitbook.com/@epidiverse/s/project/epidiverse-pipelines/installation#3-pipeline-configuration)
-    * [EpiDiverse infrastructure](https://app.gitbook.com/@epidiverse/s/project/epidiverse-pipelines/installation#appendices)
-3. [Running the pipeline](docs/usage.md)
-4. [Understanding the results](docs/output.md)
-5. [Troubleshooting](https://app.gitbook.com/@epidiverse/s/project/epidiverse-pipelines/troubleshooting)
 
 ### Credits
 
