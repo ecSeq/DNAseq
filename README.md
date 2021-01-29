@@ -29,7 +29,9 @@ nextflow run ecseq/dnaseq -profile test,<docker|singularity|conda>
 iv. Start running your own analysis!
 
 ```bash
-nextflow run ecseq/dnaseq -profile <docker|singularity|conda> --input /path/to/fastq/dir --reference /path/to/genome.fa
+nextflow run ecseq/dnaseq -profile <docker|singularity|conda> \
+--input /path/to/fastq/dir --reference /path/to/genome.fa \
+<--bowtie2|--BWA|--BWA_MEM|--segemehl|--STAR>
 ```
 
 > See the [usage documentation](docs/usage.md) for all of the available options when running the pipeline.
