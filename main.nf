@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 
-// DSL2 BRANCH
-nextflow.preview.dsl=2
+// ENABLE DSL2
+nextflow.enable.dsl=2
 
 // PRINT HELP AND EXIT
 if(params.help){
@@ -25,16 +25,12 @@ if(params.help){
               --SE                            Indicate to the pipeline whether fastq files are SE reads in "*.fastq.gz" format. [default: off]
 
 
-         Options: ALIGNMENT [REQUIRED]
-              --bowtie2                       Perform alignments with "bowtie2". [default: off]
+         Options: MODIFIERS
+              --FastQC                        Generate FastQC report of trimmed reads. [default: off]
 
-              --BWA                           Perform alignments with "BWA". [default: off]
+              --bamQC                         Generate bamQC report of alignments. [default: off]
 
-              --BWA_MEM                       Perform alignments with "BWA_MEM". [default: off]
-
-              --segemehl                      Perform alignments with "segemehl". [default: off]
-
-              --STAR                          Perform alignments with "STAR". [default: off]
+              --keepReads                     Keep trimmed fastq reads. [default: off]
 
 
          Options: TRIMMING
@@ -59,7 +55,7 @@ if(params.help){
               nextflow run ecseq/dna \
               --input /path/to/input/dir \
               --reference /path/to/genome.fa \
-              --bowtie2 --BWA --BWA_MEM --segemehl --STAR
+              --FastQC --bamQC --keepReads
 
     """
     ["bash", "${baseDir}/bin/clean.sh", "${workflow.sessionId}"].execute()
@@ -86,18 +82,6 @@ fai = file("${params.reference}.fai", checkIfExists: true, glob: false)
 reads_path = params.SE ? "${params.input}/*.fastq.gz" : "${params.input}/*{1,2}.fastq.gz"
 
 
-// populate list of alignment software based on user input params
-if (!params.bowtie2 && !params.BWA && !params.BWA_MEM && !params.segemehl && !params.STAR) {
-    error "ERROR: please specify one or more software to align with!"
-} else {
-    mapperList = []
-    if (params.bowtie2){mapperList.add("bowtie2")}
-    if (params.BWA){mapperList.add("BWA")}
-    if (params.BWA_MEM){mapperList.add("BWA_MEM")}
-    if (params.segemehl){mapperList.add("segemehl")}
-    if (params.STAR){mapperList.add("STAR")}
-}
-
 
 // PRINT STANDARD LOGGING INFO
 log.info ""
@@ -113,8 +97,8 @@ log.info ""
 log.info "         input dir    : ${workflow.profile.tokenize(",").contains("test") ? "-" : "${reads_path}"}"
 log.info "         reference    : ${params.reference}"
 log.info "         output dir   : ${params.output}"
-log.info "         mapper(s)    : ${mapperList}"
 log.info "         mode         : ${params.SE ? "single-end" : "paired-end"}"
+log.info "         QC options   : ${params.FastQC ? "FastQC " : ""}${params.bamQC ? "bamQC" : ""}"
 log.info ""
 log.info "         ================================================"
 log.info "         RUN NAME: ${workflow.runName}"
@@ -135,7 +119,7 @@ log.info ""
 // STAGE BAM FILES FROM TEST PROFILE # this establishes the test data to use with -profile test
 if ( workflow.profile.tokenize(",").contains("test") ){
 
-        include { check_test_data } from './libs/functions.nf' params(readPaths: params.readPaths, singleEnd: params.SE)
+        include { check_test_data } from './lib/functions.nf' params(readPaths: params.readPaths, singleEnd: params.SE)
         READS = check_test_data(params.readPaths, params.SE)
 
 } else {
@@ -151,9 +135,6 @@ if ( workflow.profile.tokenize(",").contains("test") ){
 
 }
 
-// STAGE ALIGNMENT TYPES CHANNEL # this defines which software to run based on user parameters
-TYPES = Channel.fromList(mapperList)
-
 
 
 ////////////////////
@@ -167,8 +148,8 @@ TYPES = Channel.fromList(mapperList)
  *    is always unnamed.
  */
 
-// INCLUDES # here you must give the relevant process files from the libs directory 
-include {cutadapt;FastQC;indexing;mapping} from './libs/process.nf' params(params)
+// INCLUDES # here you must give the relevant process files from the lib directory 
+include {cutadapt;FastQC;bowtie2_index;bowtie2;bamQC} from './lib/process.nf' params(params)
 
 // SUB-WORKFLOWS
 workflow 'DNAseq' {
@@ -176,7 +157,6 @@ workflow 'DNAseq' {
     // take the initial Channels and paths
     take:
         READS
-        TYPES
         fasta
         fai
 
@@ -192,17 +172,19 @@ workflow 'DNAseq' {
         FastQC(cutadapt.out[0])
 
         // we can also already start indexing as these processes do not depend on each other
-        indexing(TYPES,fasta,fai)
+        bowtie2_index(fasta,fai)
 
         // now we have a series of trimmed reads from cutadapt eg. [sample_name, [clipped_1.fastq.gz,clipped_2.fastq.gz]]
-        // we also have a series of indexed genomes for mapping eg. [BWA, /path/to/index/dir]
+        // we also have a series of indexed genomes for mapping eg. [/path/to/index/dir]
         // so we should combine these channels to make all possible combinations:
-        reads_and_software = cutadapt.out[0].combine(indexing.out)
-        // eg. [sample_name, [clipped_1.fastq.gz,clipped_2.fastq.gz], BWA, /path/to/index/dir]
-        // eg. [sample_name, [clipped_1.fastq.gz,clipped_2.fastq.gz], bowtie2, /path/to/index/dir]
+        reads_and_index = cutadapt.out[0].combine(bowtie2_index.out)
+        // eg. [sample_name, [clipped_1.fastq.gz,clipped_2.fastq.gz], /path/to/index/dir]
 
         // and now we can run the alignments!
-        mapping(reads_and_software,fasta,fai)
+        bowtie2(reads_and_index,fasta,fai)
+
+        // finally we are able to run the optional bamQC if the user chooses to
+        bamQC(bowtie2.out[0])
 
 }
 
@@ -211,7 +193,7 @@ workflow {
 
     // call sub-workflows eg. WORKFLOW(Channel1, Channel2, Channel3, etc.)
     main:
-        DNAseq(READS, TYPES, fasta, fai)
+        DNAseq(READS, fasta, fai)
 
 }
 

@@ -7,12 +7,10 @@ This document describes the parameter options used by the pipeline.
     * [`--reference`](#--reference-arg-required)
     * [`--output`](#--output-arg)
     * [`--SE`](#--SE)
-* [Alignment parameters](#alignment-parameters)
-    * [`--bowtie2`](#--bowtie2)
-    * [`--BWA`](#--BWA)
-    * [`--BWA_MEM`](#--BWA_MEM)
-    * [`--segemehl`](#--segemehl)
-    * [`--STAR`](#--STAR)
+* [Modifying parameters](#modifying-parameters)
+    * [`--FastQC`](#--fastqc)
+    * [`--bamQC`](#--bamqc)
+    * [`--keepReads`](#--keepreads)
 * [Trimming parameters](#trimming-parameters)
     * [`--forward`](#--forward-arg)
     * [`--reverse`](#--reverse-arg)
@@ -67,22 +65,16 @@ Name the output directory where containing final results. [default: "./"]
 Indicate to the pipeline whether input reads should be expected in single-end format (i.e. "\*.fastq.gz"). [default: off]
 
 
-## Alignment Parameters
+## Modifying Parameters
 
-### `--bowtie2`
-Specify in order to produce alignments using "bowtie2". [default: off]
+### `--FastQC`
+Specify in order to generate QC reports of trimmed reads with FastQC. [default: off]
 
-### `--BWA`
-Specify in order to produce alignments using "BWA". [default: off]
+### `--bamQC`
+Specify in order to produce QC reports of alignments using Qualimap bamQC. [default: off]
 
-### `--BWA_MEM`
-Specify in order to produce alignments using "BWA MEM". [default: off]
-
-### `--segemehl`
-Specify in order to produce alignments using "segemehl". [default: off]
-
-### `--STAR`
-Specify in order to produce alignments using "STAR". [default: off]
+### `--keepReads`
+Specify in order to keep trimmed fastq reads as well as alignments. [default: off]
 
 
 ## Trimming Parameters

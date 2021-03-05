@@ -8,7 +8,7 @@ ecSeq-DNAseq Pipeline
 
 **ecSeq/DNAseq** is a simple bioinformatics analysis pipeline for trimming and aligning DNAseq data with a small selection of software.
 
-The workflow processes a collection of raw fastq files using [cutadapt](https://github.com/marcelm/cutadapt), producing quality trimmed reads which are then evaluated with [FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/). Indexing of the given reference genome is performed prior to alignment with any combination of [bowtie2](https://github.com/BenLangmead/bowtie2), [BWA/BWA MEM](https://github.com/lh3/bwa), [segemehl](https://www.bioinf.uni-leipzig.de/Software/segemehl/) and [STAR](https://github.com/alexdobin/STAR). 
+The workflow processes a collection of raw fastq files using [cutadapt](https://github.com/marcelm/cutadapt), producing quality trimmed reads which are then evaluated with [FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/). Indexing of the given reference genome is performed prior to alignment with [bowtie2](https://github.com/BenLangmead/bowtie2), and alignments are assessed with [QualiMap](http://qualimap.conesalab.org/) bamQC. 
 
 > See the [output documentation](docs/output.md) for more details of the results.
 
@@ -30,8 +30,7 @@ iv. Start running your own analysis!
 
 ```bash
 nextflow run ecseq/dnaseq -profile <docker|singularity|conda> \
---input /path/to/fastq/dir --reference /path/to/genome.fa \
-<--bowtie2|--BWA|--BWA_MEM|--segemehl|--STAR>
+--input /path/to/fastq/dir --reference /path/to/genome.fa
 ```
 
 > See the [usage documentation](docs/usage.md) for all of the available options when running the pipeline.

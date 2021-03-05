@@ -5,26 +5,27 @@ This document describes the output produced by the pipeline.
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
 * [Read Trimming](#read-trimming) - read trimming with cutadapt
-* [Quality Control](#quality-control) - generating FastQC reports
-* [Read Alignment](#read-alignment) - Mapping trimmed reads with Bowtie2, BWA, BWA MEM, segemehl, and/or STAR
+* [Read Alignment](#read-alignment) - mapping trimmed reads with bowtie2
+* [Quality Control](#quality-control) - generating FastQC and bamQC reports
 * [Pipeline Info](#pipeline-info) - reports from nextflow about the pipeline run
 
 ## Read Trimming
-Input reads will be trimmed with cutadapt and output to a new directory.
+Input reads will be trimmed with cutadapt, and output to a new directory if specified by the user.
 
-**Output directory: `./clipping`**
-
-
-## Quality Control
-Following trimming, the pipeline will generate FastQC reports for each new set of reads.
-
-**Output directory: `./clipping/fastqc`**
+**Output directory: `./trimming`**
 
 
 ## Read Alignment
 Depending on which options are specified to the pipeline, trimmed reads will be aligned with Bowtie2, BWA, BWA MEM, segemehl and/or STAR.
 
 **Output directory: `./mapping`**
+
+
+## Quality Control
+Following trimming, the pipeline will generate FastQC reports for each new set of reads. Following alignment, the pipeline will generate bamQC reports for each BAM file.
+
+**Output directory: `./trimming`**
+**Output directory: `./mapping/<sample>`**
 
 
 ## Pipeline Info
