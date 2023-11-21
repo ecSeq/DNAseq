@@ -1,0 +1,24 @@
+# params.yaml
+# This file contains custom parameter settings, which can be adjusted
+# and provided to the pipeline with the -params-file option
+
+# BASIC PARAMS
+debug: false
+
+# INPUT / OUTPUT
+input: "$PWD"
+reference: false
+output: "$PWD"
+SE: false
+
+# MODIFIERS
+FastQC: false
+bamQC: false
+keepReads: false
+
+# TRIMMING
+forward: "GATCGGAAGAGCTCGTATGCCGTCTTCTGCTTG"
+reverse: "ACACTCTTTCCCTACACGACGCTCTTCCGATCT"
+minQual: 20
+minLeng: 25
+minOver: 3
