@@ -1,5 +1,3 @@
-#!/usr/bin/env nextflow
-
 // INCLUDES # here you must give the relevant processes from the modules/process directory 
 include {cutadapt;FastQC;bowtie2_index;bowtie2;bamQC} from "${projectDir}/modules/process"
 

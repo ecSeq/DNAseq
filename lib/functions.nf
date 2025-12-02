@@ -1,59 +1,67 @@
-#!/usr/bin/env nextflow
 // This file for loading custom functions into the main.nf script (separated for portability)
 
 // print --help information
 def printHelp() {
     println """\
 
-         ===========================================
-          E C S E Q - D N A s e q   P I P E L I N E
-         ===========================================
-         ~ version ${workflow.manifest.version}
+     ===========================================
+      E C S E Q - D N A s e q   P I P E L I N E
+     ===========================================
+     ~ version ${workflow.manifest.version}
 
-         Usage: 
-              nextflow run ecseq/dnaseq [OPTIONS]...
+     Usage: 
+          nextflow run ecseq/dnaseq [OPTIONS]...
 
-         Options: GENERAL
-              --input [path/to/input/dir]     [REQUIRED] Provide the directory containing fastq file(s) in "*{1,2}.fastq.gz" format
+     Options: GENERAL
+          --input [path/to/input/dir]     [REQUIRED] Provide the directory containing
+                                           fastq file(s) in "*{1,2}.fastq.gz" format
 
-              --reference [path/to/ref.fa]    [REQUIRED] Provide the path to the reference genome in fasta format
+          --reference [path/to/ref.fa]    [REQUIRED] Provide the path to the reference
+                                           genome in fasta format
 
-              --output [STR]                  A string that can be given to name the output directory. [default: "."]
+          --output [STR]                  A string that can be given to name the output
+                                           directory. [default: "."]
 
-              --SE                            Indicate to the pipeline whether fastq files are SE reads in "*.fastq.gz" format. [default: off]
-
-
-         Options: MODIFIERS
-              --FastQC                        Generate FastQC report of trimmed reads. [default: off]
-
-              --bamQC                         Generate bamQC report of alignments. [default: off]
-
-              --keepReads                     Keep trimmed fastq reads. [default: off]
+          --SE                            Indicate to the pipeline whether fastq files
+                                           are SE reads in "*.fastq.gz" format.
+                                           [default: off]
 
 
-         Options: TRIMMING
-              --forward                       Forward adapter sequence. [default: "GATCGGAAGAGCTCGTATGCCGTCTTCTGCTTG"]
+     Options: MODIFIERS
+          --FastQC                        Generate FastQC report of trimmed reads.
+                                           [default: off]
 
-              --reverse                       Reverse adapter sequence. [default: "ACACTCTTTCCCTACACGACGCTCTTCCGATCT"]
+          --bamQC                         Generate bamQC report of alignments.
+                                           [default: off]
 
-              --minQual                       Minimum base quality threshold. [default: 20]
-
-              --minLeng                       Minimum read length threshold. [default: 25]
-
-              --minOver                       Minimum overlap threshold. [default: 3]
+          --keepReads                     Keep trimmed fastq reads. [default: off]
 
 
-         Options: ADDITIONAL
-              --help                          Display this help information and exit
-              --version                       Display the current pipeline version and exit
-              --debug                         Run the pipeline in debug mode    
+     Options: TRIMMING
+          --forward                       Forward adapter sequence.
+                                           [default: "GATCGGAAGAGCTCGTATGCCGTCTTCTGCTTG"]
+
+          --reverse                       Reverse adapter sequence.
+                                           [default: "ACACTCTTTCCCTACACGACGCTCTTCCGATCT"]
+
+          --minQual                       Minimum base quality threshold. [default: 20]
+
+          --minLeng                       Minimum read length threshold. [default: 25]
+
+          --minOver                       Minimum overlap threshold. [default: 3]
 
 
-         Example: 
-              nextflow run ecseq/dna \
-              --input /path/to/input/dir \
-              --reference /path/to/genome.fa \
-              --FastQC --bamQC --keepReads
+     Options: ADDITIONAL
+          --help                          Display this help information and exit
+          --version                       Display the current pipeline version and exit
+          --debug                         Run the pipeline in debug mode    
+
+
+     Example: 
+          nextflow run ecseq/dnaseq \\
+           --input /path/to/input/dir \\
+           --reference /path/to/genome.fa \\
+           --FastQC --bamQC --keepReads
 
     """
     ["bash", "${baseDir}/bin/clean.sh", "${workflow.sessionId}"].execute()
@@ -73,7 +81,7 @@ def printVersion() {
 }
 
 // print pipeline initiation logging
-def printLogging() {
+def printLogging(reads_path) {
     log.info """
          ===========================================
           E C S E Q - D N A s e q   P I P E L I N E """

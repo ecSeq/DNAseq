@@ -1,5 +1,3 @@
-#!/usr/bin/env nextflow
-
 // PRINT HELP AND EXIT
 if(params.help){
     include { printHelp } from './lib/functions.nf'
@@ -17,12 +15,12 @@ if(params.version){
 // but they are specified here as they may be referenced in LOGGING
 fasta = file("${params.reference}", checkIfExists: true, glob: false)
 fai = file("${params.reference}.fai", checkIfExists: true, glob: false)
-reads_path = params.SE ? "${params.input}/*.fastq.gz" : "${params.input}/*{1,2}.fastq.gz"
+reads_path = params.SE ? "${params.input}/*.fastq" : "${params.input}/*{1,2}.fastq"
 
 
 // PRINT STANDARD LOGGING INFO
 include { printLogging } from './lib/functions.nf'
-printLogging()
+printLogging(reads_path)
 
 
 
@@ -39,7 +37,7 @@ printLogging()
 // STAGE BAM FILES FROM TEST PROFILE # this establishes the test data to use with -profile test
 if ( workflow.profile.tokenize(',').contains('test') ){
 
-        include { check_test_data } from './lib/functions.nf' params(readPaths: params.readPaths, singleEnd: params.SE)
+        include { check_test_data } from './lib/functions.nf'
         READS = check_test_data(params.readPaths, params.SE)
 
 } else {

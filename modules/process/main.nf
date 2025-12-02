@@ -1,17 +1,17 @@
-#!/usr/bin/env nextflow
 // This file defines individual processes (separated for portability)
 
 // perform trimming with cutadapt
 process "cutadapt" {
 
+    label "DNAseq"
     label "low"
     label "finish"
-    tag "$sample"
 
-    maxForks "${params.fork}".toInteger()
-
+    tag "${sample}"
     publishDir "${params.output}", pattern: "trimming/*.fastq.gz", mode: 'copy', enabled: params.keepReads ? true : false
     publishDir "${params.output}", pattern: "trimming/logs/${sample}.cutadapt.log", mode: 'move'
+
+    maxForks "${params.fork}".toInteger()
 
     input:
     tuple val(sample), path(reads)
@@ -19,10 +19,10 @@ process "cutadapt" {
     // eg. [sample, reads.fastq.gz]
 
     output:
-    tuple val(sample), path("trimming/*.fastq.gz")
+    tuple val(sample), path("trimming/*.fastq{,.gz}")
     // eg. [sample, [/path/to/trimming/sample_1.fastq, /path/to/trimming/sample_2.fastq]]
     // eg. [sample, /path/to/trimming/sample.fastq]
-    path "trimming/*.fastq.gz"
+    path "trimming/*.fastq{,.gz}"
     path "trimming/logs/${sample}.cutadapt.log"
 
     script:
@@ -49,14 +49,15 @@ process "cutadapt" {
 // generate quality control report
 process "FastQC" {
 
+    label "DNAseq"
     label "low"
     label "ignore"
-    tag "$sample"
 
-    maxForks "${params.fork}".toInteger()
-
+    tag "${sample}"
     publishDir "${params.output}", pattern: "trimming/*.{html,zip}", mode: 'move'
     publishDir "${params.output}", pattern: "trimming/logs/${sample}.fastqc.log", mode: 'move'
+
+    maxForks "${params.fork}".toInteger()
 
     input:
     tuple val(sample), path(reads)
@@ -83,6 +84,7 @@ process "FastQC" {
 // index the genome
 process "bowtie2_index" {
 
+    label "DNAseq"
     label "low"
     label "finish"
 
@@ -107,14 +109,15 @@ process "bowtie2_index" {
 // align the reads to the genome
 process "bowtie2" {
 
+    label "DNAseq"
     label "low"
     label "finish"
-    tag "$sample"
 
-    maxForks "${params.fork}".toInteger()
-
+    tag "${sample}"
     publishDir "${params.output}", pattern: "mapping/*.bam", mode: params.bamQC ? 'copy' : 'move'
     publishDir "${params.output}", pattern: "mapping/logs/*.log", mode: 'move'
+
+    maxForks "${params.fork}".toInteger()
 
     input:
     tuple val(sample), path(reads), path(index)
@@ -142,14 +145,15 @@ process "bowtie2" {
 // perform QC of alignments
 process "bamQC" {
 
+    label "DNAseq"
     label "low"
     label "finish"
-    tag "$sample"
 
-    maxForks "${params.fork}".toInteger()
-
+    tag "${sample}"
     publishDir "${params.output}", pattern: "mapping/${sample}/*.{txt,pdf}", mode: 'move'
     publishDir "${params.output}", pattern: "mapping/logs/${sample}.bamqc.log", mode: 'move'
+
+    maxForks "${params.fork}".toInteger()
 
     input:
     tuple val(sample), path(bam)

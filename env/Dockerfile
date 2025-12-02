@@ -6,5 +6,4 @@ LABEL authors="Adam Nunn" \
 COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
 
-# you only need to change <template> in this line:
-ENV PATH /opt/conda/envs/<template>/bin:$PATH:
+ENV PATH /opt/conda/envs/DNAseq/bin:$PATH:
